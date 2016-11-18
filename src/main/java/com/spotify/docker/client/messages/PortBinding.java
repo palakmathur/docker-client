@@ -17,80 +17,39 @@
 
 package com.spotify.docker.client.messages;
 
-import com.google.common.base.MoreObjects;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Objects;
-
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+import org.jetbrains.annotations.NotNull;
+
+@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
-public class PortBinding {
+public abstract class PortBinding {
 
+  PortBinding() {
+    // Prevent outside instantiation
+  }
+
+  @NotNull
   @JsonProperty("HostIp")
-  private String hostIp;
+  public abstract String hostIp();
+
+  @NotNull
   @JsonProperty("HostPort")
-  private String hostPort;
-
-  public String hostIp() {
-    return hostIp;
-  }
-
-  public void hostIp(final String hostIp) {
-    this.hostIp = hostIp;
-  }
-
-  public String hostPort() {
-    return hostPort;
-  }
-
-  public void hostPort(final String hostPort) {
-    this.hostPort = hostPort;
-  }
+  public abstract String hostPort();
 
   public static PortBinding of(final String ip, final String port) {
-    final PortBinding binding = new PortBinding();
-    binding.hostIp(ip);
-    binding.hostPort(port);
-    return binding;
+    return new AutoValue_PortBinding(ip, port);
   }
 
   public static PortBinding of(final String ip, final int port) {
-    return of(ip, String.valueOf(port));
+    return new AutoValue_PortBinding(ip, String.valueOf(port));
   }
 
   public static PortBinding randomPort(final String ip) {
-    return of(ip, "");
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final PortBinding that = (PortBinding) o;
-
-    return Objects.equals(this.hostIp, that.hostIp) &&
-           Objects.equals(this.hostPort, that.hostPort);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(hostIp, hostPort);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("hostIp", hostIp)
-        .add("hostPort", hostPort)
-        .toString();
+    return new AutoValue_PortBinding(ip, "");
   }
 }
