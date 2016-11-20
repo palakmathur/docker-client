@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Spotify AB.
+ * Copyright (c) 2014 Spotify AB.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,31 @@
 
 package com.spotify.docker.client.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @AutoValue
-public abstract class Device {
+public abstract class LxcConfParameter {
 
-  Device() {
+  LxcConfParameter() {
     // Prevent outside instantiation
   }
 
   @NotNull
-  @JsonProperty("PathOnHost")
-  public abstract String pathOnHost();
+  @JsonProperty("Key")
+  public abstract String key();
 
   @NotNull
-  @JsonProperty("PathInContainer")
-  public abstract String pathInContainer();
+  @JsonProperty("Value")
+  public abstract String value();
 
-  @NotNull
-  @JsonProperty("CgroupPermissions")
-  public abstract String cGroupPermissions();
+  @JsonCreator
+  static LxcConfParameter create(
+      @JsonProperty("Key") final String key,
+      @JsonProperty("Value") final String value) {
+    return new AutoValue_LxcConfParameter(key, value);
+  }
 }

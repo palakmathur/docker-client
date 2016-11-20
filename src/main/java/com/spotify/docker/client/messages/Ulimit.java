@@ -22,46 +22,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-/**
- * An object that represents the JSON returned by the Docker API for an exec command's process
- * configuration.
- */
 @AutoValue
-public abstract class ProcessConfig {
+public abstract class Ulimit {
 
-  ProcessConfig() {
+  Ulimit() {
     // Prevent outside instantiation
   }
 
   @NotNull
-  @JsonProperty("privileged")
-  public abstract Boolean privileged();
+  @JsonProperty("Name")
+  public abstract String name();
 
   @NotNull
-  @JsonProperty("user")
-  public abstract String user();
+  @JsonProperty("Soft")
+  public abstract Integer soft();
 
   @NotNull
-  @JsonProperty("tty")
-  public abstract Boolean tty();
-
-  @NotNull
-  @JsonProperty("entrypoint")
-  public abstract String entrypoint();
-
-  @NotNull
-  @JsonProperty("arguments")
-  public abstract List<String> arguments();
+  @JsonProperty("Hard")
+  public abstract Integer hard();
 
   @JsonCreator
-  static ProcessConfig create(
-      @JsonProperty("privileged") final Boolean privileged,
-      @JsonProperty("user") final String user,
-      @JsonProperty("tty") final Boolean tty,
-      @JsonProperty("entrypoint") final String entrypoint,
-      @JsonProperty("arguments") final List<String> arguments) {
-    return new AutoValue_ProcessConfig(privileged, user, tty, entrypoint, arguments);
+  public static Ulimit create(
+      @JsonProperty("Name") final String name,
+      @JsonProperty("Soft") final int soft,
+      @JsonProperty("Hard") final int hard) {
+    return new AutoValue_Ulimit(name, soft, hard);
   }
 }

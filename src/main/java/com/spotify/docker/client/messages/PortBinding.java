@@ -21,6 +21,7 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.jetbrains.annotations.NotNull;
@@ -51,5 +52,12 @@ public abstract class PortBinding {
 
   public static PortBinding randomPort(final String ip) {
     return new AutoValue_PortBinding(ip, "");
+  }
+
+  @JsonCreator
+  public static PortBinding create(
+      @JsonProperty("HostIp") final String hostIp,
+      @JsonProperty("HostPort") final String hostPort) {
+    return new AutoValue_PortBinding(hostIp, hostPort);
   }
 }
