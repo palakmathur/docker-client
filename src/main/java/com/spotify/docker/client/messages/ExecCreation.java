@@ -17,65 +17,37 @@
 
 package com.spotify.docker.client.messages;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-import java.util.Objects;
-
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
-public class ExecCreation {
+public abstract class ExecCreation {
 
+  ExecCreation() {
+    // Prevent outside instantiation
+  }
+
+  @NotNull
   @JsonProperty("Id")
-  private String id;
+  public abstract String id();
+
+  @NotNull
   @JsonProperty("Warnings")
-  private ImmutableList<String> warnings;
+  public abstract List<String> warnings();
 
-  public ExecCreation() {
-  }
-
-  public ExecCreation(final String id) {
-    this.id = id;
-  }
-
-  public String id() {
-    return id;
-  }
-
-  public List<String> getWarnings() {
-    return warnings;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final ExecCreation that = (ExecCreation) o;
-
-    return Objects.equals(this.id, that.id) &&
-           Objects.equals(this.warnings, that.warnings);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, warnings);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("id", id)
-        .add("warnings", warnings)
-        .toString();
+  @JsonCreator
+  static ExecCreation create(
+      @JsonProperty("Id") final String id,
+      @JsonProperty("Warnings") final List<String> warnings) {
+    return new AutoValue_ExecCreation(id, warnings);
   }
 }

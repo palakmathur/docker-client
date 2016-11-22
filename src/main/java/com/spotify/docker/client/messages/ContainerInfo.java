@@ -17,333 +17,204 @@
 
 package com.spotify.docker.client.messages;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
-
+@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, setterVisibility = NONE, getterVisibility = NONE)
-public class ContainerInfo {
+public abstract class ContainerInfo {
 
+  @NotNull
   @JsonProperty("Id")
-  private String id;
+  public abstract String id();
+
+  @NotNull
   @JsonProperty("Created")
-  private Date created;
+  public abstract Date created();
+
+  @NotNull
   @JsonProperty("Path")
-  private String path;
+  public abstract String path();
+
+  @NotNull
   @JsonProperty("Args")
-  private ImmutableList<String> args;
+  public abstract List<String> args();
+
+  @NotNull
   @JsonProperty("Config")
-  private ContainerConfig config;
+  public abstract ContainerConfig config();
+
+  @NotNull
   @JsonProperty("HostConfig")
-  private HostConfig hostConfig;
+  public abstract HostConfig hostConfig();
+
+  @NotNull
   @JsonProperty("State")
-  private ContainerState state;
+  public abstract ContainerState state();
+
+  @NotNull
   @JsonProperty("Image")
-  private String image;
+  public abstract String image();
+
+  @NotNull
   @JsonProperty("NetworkSettings")
-  private NetworkSettings networkSettings;
+  public abstract NetworkSettings networkSettings();
+
+  @NotNull
   @JsonProperty("ResolvConfPath")
-  private String resolvConfPath;
+  public abstract String resolvConfPath();
+
+  @NotNull
   @JsonProperty("HostnamePath")
-  private String hostnamePath;
+  public abstract String hostnamePath();
+
+  @NotNull
   @JsonProperty("HostsPath")
-  private String hostsPath;
+  public abstract String hostsPath();
+
+  @NotNull
   @JsonProperty("Name")
-  private String name;
+  public abstract String name();
+
+  @NotNull
   @JsonProperty("Driver")
-  private String driver;
+  public abstract String driver();
+
+  @NotNull
   @JsonProperty("ExecDriver")
-  private String execDriver;
+  public abstract String execDriver();
+
+  @NotNull
   @JsonProperty("ProcessLabel")
-  private String processLabel;
+  public abstract String processLabel();
+
+  @NotNull
   @JsonProperty("MountLabel")
-  private String mountLabel;
+  public abstract String mountLabel();
+
+  /**
+   * Volumes returned by execInspect
+   *
+   * @return A map of volumes where the key is the source path on the local file system, and the key
+   * is the target path on the Docker host.
+   * @deprecated Replaced by {@link #mounts()} in API 1.20.
+   */
+  @Nullable
+  @Deprecated
   @JsonProperty("Volumes")
-  private ImmutableMap<String, String> volumes;
+  public abstract Map<String, String> volumes();
+
+  /**
+   * Volumes returned by execInspect
+   *
+   * @return A map of volumes where the key is the source path on the local file system, and the key
+   * is the target path on the Docker host.
+   * @deprecated Replaced by {@link #mounts()} in API 1.20.
+   */
+  @Nullable
+  @Deprecated
   @JsonProperty("VolumesRW")
-  private ImmutableMap<String, Boolean> volumesRW;
+  public abstract Map<String, Boolean> volumesRW();
+
+  @NotNull
   @JsonProperty("AppArmorProfile")
-  private String appArmorProfile;
+  public abstract String appArmorProfile();
+
+  @Nullable
   @JsonProperty("ExecIDs")
-  private ImmutableList<String> execId;
+  public abstract List<String> execIds();
+
+  @NotNull
   @JsonProperty("LogPath")
-  private String logPath;
+  public abstract String logPath();
+
+  @NotNull
   @JsonProperty("RestartCount")
-  private Long restartCount;
+  public abstract Long restartCount();
+
+  @Nullable
   @JsonProperty("Mounts")
-  private ImmutableList<ContainerMount> mounts;
+  public abstract List<ContainerMount> mounts();
 
   /**
    * This field is an extension defined by the Docker Swarm API, therefore it will only be populated
    * when communicating with a Swarm cluster.
    */
+  @NotNull
   @JsonProperty("Node")
-  private Node node;
+  public abstract Node node();
 
-  public String id() {
-    return id;
-  }
-
-  public Date created() {
-    return created == null ? null : new Date(created.getTime());
-  }
-
-  public String path() {
-    return path;
-  }
-
-  public List<String> args() {
-    return args;
-  }
-
-  public ContainerConfig config() {
-    return config;
-  }
-
-  public HostConfig hostConfig() {
-    return hostConfig;
-  }
-
-  public ContainerState state() {
-    return state;
-  }
-
-  public String image() {
-    return image;
-  }
-
-  public NetworkSettings networkSettings() {
-    return networkSettings;
-  }
-
-  public String resolvConfPath() {
-    return resolvConfPath;
-  }
-
-  public String hostnamePath() {
-    return hostnamePath;
-  }
-
-  public String hostsPath() {
-    return hostsPath;
-  }
-
-  public String name() {
-    return name;
-  }
-
-  public String driver() {
-    return driver;
-  }
-
-  public String execDriver() {
-    return execDriver;
-  }
-
-  public String processLabel() {
-    return processLabel;
-  }
-
-  public String mountLabel() {
-    return mountLabel;
-  }
-
-  /**
-   * Volumes returned by execInspect
-   *
-   * @return A map of volumes where the key is the source path on the local file system, and the key
-   * is the target path on the Docker host.
-   * @deprecated Replaced by {@link #mounts()} in API 1.20.
-   */
-  @Deprecated
-  public Map<String, String> volumes() {
-    return volumes;
-  }
-
-  /**
-   * Volumes returned by execInspect
-   *
-   * @return A map of volumes where the key is the source path on the local file system, and the key
-   * is the target path on the Docker host.
-   * @deprecated Replaced by {@link #mounts()} in API 1.20.
-   */
-  @Deprecated
-  public Map<String, Boolean> volumesRW() {
-    return volumesRW;
-  }
-
-  public Node node() {
-    return node;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final ContainerInfo that = (ContainerInfo) o;
-
-    return Objects.equals(this.id, that.id) &&
-           Objects.equals(this.created, that.created) &&
-           Objects.equals(this.path, that.path) &&
-           Objects.equals(this.args, that.args) &&
-           Objects.equals(this.config, that.config) &&
-           Objects.equals(this.hostConfig, that.hostConfig) &&
-           Objects.equals(this.state, that.state) &&
-           Objects.equals(this.image, that.image) &&
-           Objects.equals(this.networkSettings, that.networkSettings) &&
-           Objects.equals(this.resolvConfPath, that.resolvConfPath) &&
-           Objects.equals(this.hostnamePath, that.hostnamePath) &&
-           Objects.equals(this.hostsPath, that.hostsPath) &&
-           Objects.equals(this.name, that.name) &&
-           Objects.equals(this.driver, that.driver) &&
-           Objects.equals(this.execDriver, that.execDriver) &&
-           Objects.equals(this.processLabel, that.processLabel) &&
-           Objects.equals(this.mountLabel, that.mountLabel) &&
-           Objects.equals(this.volumes, that.volumes) &&
-           Objects.equals(this.volumesRW, that.volumesRW) &&
-           Objects.equals(this.appArmorProfile, that.appArmorProfile) &&
-           Objects.equals(this.execId, that.execId) &&
-           Objects.equals(this.logPath, that.logPath) &&
-           Objects.equals(this.restartCount, that.restartCount) &&
-           Objects.equals(this.mounts, that.mounts);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id, created, path, args, config, hostConfig, state, image,
+  @JsonCreator
+  static ContainerInfo create(
+      @JsonProperty("Id") final String id,
+      @JsonProperty("Created") final Date created,
+      @JsonProperty("Path") final String path,
+      @JsonProperty("Args") final List<String> args,
+      @JsonProperty("Config") final ContainerConfig containerConfig,
+      @JsonProperty("HostConfig") final HostConfig hostConfig,
+      @JsonProperty("State") final ContainerState containerState,
+      @JsonProperty("Image") final String image,
+      @JsonProperty("NetworkSettings") final NetworkSettings networkSettings,
+      @JsonProperty("ResolvConfPath") final String resolvConfPath,
+      @JsonProperty("HostnamePath") final String hostnamePath,
+      @JsonProperty("HostsPath") final String hostsPath,
+      @JsonProperty("Name") final String name,
+      @JsonProperty("Driver") final String driver,
+      @JsonProperty("ExecDriver") final String execDriver,
+      @JsonProperty("ProcessLabel") final String processLabel,
+      @JsonProperty("MountLabel") final String mountLabel,
+      @JsonProperty("Volumes") final Map<String, String> volumes,
+      @JsonProperty("VolumesRW") final Map<String, Boolean> volumesRW,
+      @JsonProperty("AppArmorProfile") final String appArmorProfile,
+      @JsonProperty("ExecIDs") final List<String> execIds,
+      @JsonProperty("LogPath") final String logPath,
+      @JsonProperty("RestartCount") final Long restartCount,
+      @JsonProperty("Mounts") final List<ContainerMount> mounts,
+      @JsonProperty("Node") final Node node) {
+    return new AutoValue_ContainerInfo(
+        id, created, path, args, containerConfig, hostConfig, containerState, image,
         networkSettings, resolvConfPath, hostnamePath, hostsPath, name, driver, execDriver,
-        processLabel, mountLabel, volumes, volumesRW, node, appArmorProfile,
-        execId, logPath, restartCount, mounts);
+        processLabel, mountLabel, volumes, volumesRW, appArmorProfile, execIds, logPath,
+        restartCount, mounts, node);
   }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("id", id)
-        .add("created", created)
-        .add("path", path)
-        .add("args", args)
-        .add("config", config)
-        .add("hostConfig", hostConfig)
-        .add("state", state)
-        .add("image", image)
-        .add("networkSettings", networkSettings)
-        .add("resolvConfPath", resolvConfPath)
-        .add("hostnamePath", hostnamePath)
-        .add("hostsPath", hostsPath)
-        .add("name", name)
-        .add("driver", driver)
-        .add("execDriver", execDriver)
-        .add("processLabel", processLabel)
-        .add("mountLabel", mountLabel)
-        .add("volumes", volumes)
-        .add("volumesRW", volumesRW)
-        .add("node", node)
-        .add("appArmorProfile", appArmorProfile)
-        .add("execIDs", execId)
-        .add("logPath", logPath)
-        .add("restartCount", restartCount)
-        .add("mounts", mounts)
-        .toString();
-  }
+  @AutoValue
+  public abstract static class Node {
 
-  public static class Node {
-
+    @NotNull
     @JsonProperty("Id")
-    private String id;
+    public abstract String id();
+
+    @NotNull
     @JsonProperty("Ip")
-    private String ip;
+    public abstract String ip();
+
+    @NotNull
     @JsonProperty("Addr")
-    private String addr;
+    public abstract String addr();
+
+    @NotNull
     @JsonProperty("Name")
-    private String name;
+    public abstract String name();
 
-    public String getId() {
-      return id;
+    @JsonCreator
+    static Node create(
+        @JsonProperty("Id") final String id,
+        @JsonProperty("Ip") final String ip,
+        @JsonProperty("Addr") final String addr,
+        @JsonProperty("Name") final String name) {
+      return new AutoValue_ContainerInfo_Node(id, ip, addr, name);
     }
-
-    public void setId(String id) {
-      this.id = id;
-    }
-
-    public String getIp() {
-      return ip;
-    }
-
-    public void setIp(String ip) {
-      this.ip = ip;
-    }
-
-    public String getAddr() {
-      return addr;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-      final Node that = (Node) o;
-
-      return Objects.equals(this.id, that.id) &&
-             Objects.equals(this.ip, that.ip) &&
-             Objects.equals(this.addr, that.addr) &&
-             Objects.equals(this.name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(id, ip, addr, name);
-    }
-
-    @Override
-    public String toString() {
-      return MoreObjects.toStringHelper(this)
-          .add("id", id)
-          .add("ip", ip)
-          .add("addr", addr)
-          .add("name", name)
-          .toString();
-    }
-  }
-
-  public String appArmorProfile() {
-    return appArmorProfile;
-  }
-
-  public List<String> execId() {
-    return execId;
-  }
-
-  public String logPath() {
-    return logPath;
-  }
-
-  public Long restartCount() {
-    return restartCount;
-  }
-
-  public List<ContainerMount> mounts() {
-    return mounts;
   }
 }

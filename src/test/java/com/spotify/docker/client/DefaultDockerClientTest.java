@@ -1565,7 +1565,7 @@ public class DefaultDockerClientTest {
     assertThat(actual.cpuShares(), equalTo(expected.cpuShares()));
     assertThat(sut.inspectContainer(id).config().getStopSignal(), equalTo(config.getStopSignal()));
     assertThat(inspection.appArmorProfile(), equalTo(""));
-    assertThat(inspection.execId(), equalTo(null));
+    assertThat(inspection.execIds(), equalTo(null));
     assertThat(inspection.logPath(), containsString(id + "-json.log"));
     assertThat(inspection.restartCount(), equalTo(0L));
     assertThat(inspection.mounts().isEmpty(), equalTo(true));

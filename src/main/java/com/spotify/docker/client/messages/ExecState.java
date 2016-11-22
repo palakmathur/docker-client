@@ -17,119 +17,75 @@
 
 package com.spotify.docker.client.messages;
 
-import com.google.common.base.MoreObjects;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Objects;
-
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An object that represents the JSON returned by the Docker API for low-level information about
  * exec commands.
  */
+@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
-public class ExecState {
+public abstract class ExecState {
 
+  ExecState() {
+    // Prevent outside instantiation
+  }
+
+  @NotNull
   @JsonProperty("ID")
-  private String id;
+  public abstract String id();
+
+  @NotNull
   @JsonProperty("Running")
-  private Boolean running;
+  public abstract Boolean running();
+
+  @NotNull
   @JsonProperty("ExitCode")
-  private Integer exitCode;
+  public abstract Integer exitCode();
+
+  @NotNull
   @JsonProperty("ProcessConfig")
-  private ProcessConfig processConfig;
+  public abstract ProcessConfig processConfig();
+
+  @NotNull
   @JsonProperty("OpenStdin")
-  private Boolean openStdin;
-  @JsonProperty("OpenStderr")
-  private Boolean openStderr;
+  public abstract Boolean openStdin();
+
+  @NotNull
   @JsonProperty("OpenStdout")
-  private Boolean openStdout;
+  public abstract Boolean openStdout();
+
+  @NotNull
+  @JsonProperty("OpenStderr")
+  public abstract Boolean openStderr();
+
+  @NotNull
   @JsonProperty("Container")
-  private ContainerInfo container;
+  public abstract ContainerInfo container();
+
+  @NotNull
   @JsonProperty("ContainerID")
-  private String containerID;
+  public abstract String containerID();
 
-  public String id() {
-    return id;
-  }
-
-  public Boolean running() {
-    return running;
-  }
-
-  public Integer exitCode() {
-    return exitCode;
-  }
-
-  public ProcessConfig processConfig() {
-    return processConfig;
-  }
-
-  public Boolean openStdin() {
-    return openStdin;
-  }
-
-  public Boolean openStderr() {
-    return openStderr;
-  }
-
-  public Boolean openStdout() {
-    return openStdout;
-  }
-
-  public ContainerInfo container() {
-    return container;
-  }
-
-  public String containerID() {
-    return containerID;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final ExecState that = (ExecState) o;
-
-    return Objects.equals(this.id, that.id) &&
-           Objects.equals(this.running, that.running) &&
-           Objects.equals(this.exitCode, that.exitCode) &&
-           Objects.equals(this.processConfig, that.processConfig) &&
-           Objects.equals(this.openStdin, that.openStdin) &&
-           Objects.equals(this.openStderr, that.openStderr) &&
-           Objects.equals(this.openStdout, that.openStdout) &&
-           Objects.equals(this.container, that.container) &&
-           Objects.equals(this.containerID, that.containerID);
-
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, running, exitCode, processConfig, openStdin, openStderr, openStdout,
-                        container, containerID);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("id", id)
-        .add("running", running)
-        .add("exitCode", exitCode)
-        .add("processConfig", processConfig)
-        .add("openStdin", openStdin)
-        .add("openStderr", openStderr)
-        .add("openStdout", openStdout)
-        .add("container", container)
-        .add("containerID", containerID)
-        .toString();
+  @JsonCreator
+  static ExecState create(
+      @JsonProperty("ID") final String id,
+      @JsonProperty("Running") final Boolean running,
+      @JsonProperty("ExitCode") final Integer exitCode,
+      @JsonProperty("ProcessConfig") final ProcessConfig processConfig,
+      @JsonProperty("OpenStdin") final Boolean openStdin,
+      @JsonProperty("OpenStdout") final Boolean openStdout,
+      @JsonProperty("OpenStderr") final Boolean openStderr,
+      @JsonProperty("Container") final ContainerInfo containerInfo,
+      @JsonProperty("ContainerID") final String containerID) {
+    return new AutoValue_ExecState(id, running, exitCode, processConfig, openStdin, openStdout,
+                                   openStderr, containerInfo, containerID);
   }
 }
