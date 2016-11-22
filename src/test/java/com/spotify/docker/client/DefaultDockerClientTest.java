@@ -141,6 +141,7 @@ import com.spotify.docker.client.messages.ImageInfo;
 import com.spotify.docker.client.messages.ImageSearchResult;
 import com.spotify.docker.client.messages.Info;
 import com.spotify.docker.client.messages.Ipam;
+import com.spotify.docker.client.messages.IpamConfig;
 import com.spotify.docker.client.messages.LogConfig;
 import com.spotify.docker.client.messages.Network;
 import com.spotify.docker.client.messages.NetworkConfig;
@@ -188,6 +189,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -2815,9 +2817,9 @@ public class DefaultDockerClientTest {
     assumeFalse(CIRCLECI);
 
     final String networkName = randomName();
-    final Ipam ipam =
-        Ipam.builder().driver("default").config("192.168.0.0/24", "192.168.0.0/24", "192.168.0.1")
-            .build();
+    final IpamConfig ipamConfig =
+        IpamConfig.create("192.168.0.0/24", "192.168.0.0/24", "192.168.0.1");
+    final Ipam ipam = Ipam.create("default", singletonList(ipamConfig));
     final NetworkConfig networkConfig =
         NetworkConfig.builder().name(networkName).driver("bridge").checkDuplicate(true).ipam(ipam)
             .build();
@@ -3464,7 +3466,7 @@ public class DefaultDockerClientTest {
     final NetworkCreation networkCreation = sut
             .createNetwork(NetworkConfig.builder().driver("overlay")
                     // TODO: workaround for https://github.com/docker/docker/issues/25735
-                    .ipam(Ipam.builder().driver("default").build())
+                    .ipam(Ipam.create("default", Collections.<IpamConfig>emptyList()))
                     .name(networkName).build());
 
     final String networkId = networkCreation.id();

@@ -47,7 +47,7 @@ public abstract class IpamConfig {
   public abstract String gateway();
 
   @JsonCreator
-  static IpamConfig create(
+  public static IpamConfig create(
       @JsonProperty("Subnet") final String subnet,
       @JsonProperty("IPRange") final String ipRange,
       @JsonProperty("Gateway") final String gateway) {

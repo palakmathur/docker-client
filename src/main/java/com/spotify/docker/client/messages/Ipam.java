@@ -21,87 +21,33 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
+import com.google.auto.value.AutoValue;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
-public class Ipam {
+public abstract class Ipam {
 
+  Ipam() {
+    // Prevent outside instantiation
+  }
+
+  @NotNull
   @JsonProperty("Driver")
-  private String driver;
+  public abstract String driver();
+
+  @NotNull
   @JsonProperty("Config")
-  private List<IpamConfig> config;
+  public abstract List<IpamConfig> config();
 
-  private Ipam(final Builder builder) {
-    this.driver = builder.driver;
-    this.config = builder.configs;
-  }
-
-  @SuppressWarnings("unused")
-  public Ipam() {
-  }
-
-  public String driver() {
-    return driver;
-  }
-
-  public List<IpamConfig> config() {
-    return config;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final Ipam that = (Ipam) o;
-
-    return Objects.equals(this.driver, that.driver) &&
-           Objects.equals(this.config, that.config);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(driver, config);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("driver", driver)
-        .add("config", config)
-        .toString();
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static class Builder {
-
-    private String driver;
-    private List<IpamConfig> configs = new ArrayList<>();
-
-    public Builder driver(final String driver) {
-      this.driver = driver;
-      return this;
-    }
-
-    public Builder config(final String subnet, final String ipRange, final String gateway) {
-      configs.add(IpamConfig.create(subnet, ipRange, gateway));
-      return this;
-    }
-
-    public Ipam build() {
-      return new Ipam(this);
-    }
+  @JsonCreator
+  public static Ipam create(
+      @JsonProperty("Driver") final String driver,
+      @JsonProperty("Config") final List<IpamConfig> config) {
+    return new AutoValue_Ipam(driver, config);
   }
 }
