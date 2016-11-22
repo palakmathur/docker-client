@@ -17,17 +17,16 @@
 
 package com.spotify.docker.client.messages;
 
-import com.google.common.base.MoreObjects;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
 public class Ipam {
@@ -89,7 +88,7 @@ public class Ipam {
   public static class Builder {
 
     private String driver;
-    private List<IpamConfig> configs = new ArrayList<IpamConfig>();
+    private List<IpamConfig> configs = new ArrayList<>();
 
     public Builder driver(final String driver) {
       this.driver = driver;
@@ -97,11 +96,7 @@ public class Ipam {
     }
 
     public Builder config(final String subnet, final String ipRange, final String gateway) {
-      final IpamConfig config = new IpamConfig();
-      config.subnet(subnet);
-      config.ipRange(ipRange);
-      config.gateway(gateway);
-      configs.add(config);
+      configs.add(IpamConfig.create(subnet, ipRange, gateway));
       return this;
     }
 

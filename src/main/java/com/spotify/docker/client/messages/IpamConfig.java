@@ -17,78 +17,40 @@
 
 package com.spotify.docker.client.messages;
 
-import com.google.common.base.MoreObjects;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Objects;
-
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+import org.jetbrains.annotations.Nullable;
+
+@AutoValue
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, setterVisibility = NONE)
-public class IpamConfig {
+public abstract class IpamConfig {
 
+  IpamConfig() {
+    // Prevent outside instantiation
+  }
+
+  @Nullable
   @JsonProperty("Subnet")
-  private String subnet;
+  public abstract String subnet();
+
+  @Nullable
   @JsonProperty("IPRange")
-  private String ipRange;
+  public abstract String ipRange();
+
+  @Nullable
   @JsonProperty("Gateway")
-  private String gateway;
+  public abstract String gateway();
 
-  public String subnet() {
-    return subnet;
+  @JsonCreator
+  static IpamConfig create(
+      @JsonProperty("Subnet") final String subnet,
+      @JsonProperty("IPRange") final String ipRange,
+      @JsonProperty("Gateway") final String gateway) {
+    return new AutoValue_IpamConfig(subnet, ipRange, gateway);
   }
-
-  public void subnet(final String subnet) {
-    this.subnet = subnet;
-  }
-
-  public String ipRange() {
-    return ipRange;
-  }
-
-  public void ipRange(final String ipRange) {
-    this.ipRange = ipRange;
-  }
-
-  public String gateway() {
-    return gateway;
-  }
-
-  public void gateway(final String gateway) {
-    this.gateway = gateway;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    final IpamConfig that = (IpamConfig) o;
-
-    return Objects.equals(this.subnet, that.subnet) &&
-           Objects.equals(this.ipRange, that.ipRange) &&
-           Objects.equals(this.gateway, that.gateway);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(subnet, ipRange, gateway);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("subnet", subnet)
-        .add("ipRange", ipRange)
-        .add("gateway", gateway)
-        .toString();
-  }
-
 }
